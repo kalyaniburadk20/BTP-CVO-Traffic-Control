@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2026-10-01T10:43:53.140368+05:30 by Eclipse SUMO duarouter 1.27.1
+<duarouterConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/duarouterConfiguration.xsd">
+
+    <input>
+        <net-file value=".\sumo\network\network.net.xml"/>
+        <route-files value=".\sumo\routes\low.trips.xml"/>
+    </input>
+
+    <output>
+        <output-file value=".\sumo\routes\low.rou.xml"/>
+    </output>
+
+</duarouterConfiguration>
+-->
+
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    <vehicle id="low_001" depart="0.00">
+        <route edges="N1_to_J1 J1_to_W1"/>
+    </vehicle>
+    <vehicle id="low_049" depart="15.00">
+        <route edges="N1_to_J1 J1_to_J2 J2_to_J3 J3_to_E3"/>
+    </vehicle>
+    <vehicle id="low_019" depart="20.00">
+        <route edges="N1_to_J1 J1_to_J2 J2_to_N2"/>
+    </vehicle>
+    <vehicle id="low_002" depart="30.00">
+        <route edges="W1_to_J1 J1_to_N1"/>
+    </vehicle>
+    <vehicle id="low_020" depart="40.00">
+        <route edges="W1_to_J1 J1_to_J4 J4_to_S4"/>
+    </vehicle>
+    <vehicle id="low_050" depart="55.00">
+        <route edges="W1_to_J1 J1_to_J2 J2_to_J5 J5_to_S5"/>
+    </vehicle>
+    <vehicle id="low_003" depart="60.00">
+        <route edges="N3_to_J3 J3_to_E3"/>
+    </vehicle>
+    <vehicle id="low_021" depart="80.00">
+        <route edges="N2_to_J2 J2_to_J3 J3_to_E3"/>
+    </vehicle>
+    <vehicle id="low_004" depart="90.00">
+        <route edges="E3_to_J3 J3_to_N3"/>
+    </vehicle>
+    <vehicle id="low_051" depart="95.00">
+        <route edges="N3_to_J3 J3_to_J2 J2_to_J1 J1_to_W1"/>
+    </vehicle>
+    <vehicle id="low_022" depart="100.00">
+        <route edges="E5_to_J5 J5_to_J2 J2_to_N2"/>
+    </vehicle>
+    <vehicle id="low_044" depart="110.00">
+        <route edges="N3_to_J3 J3_to_J2 J2_to_N2"/>
+    </vehicle>
+    <vehicle id="low_005" depart="120.00">
+        <route edges="S3_to_J3 J3_to_E3"/>
+    </vehicle>
+    <vehicle id="low_052" depart="135.00">
+        <route edges="S4_to_J4 J4_to_J1 J1_to_J2 J2_to_J3 J3_to_E3"/>
+    </vehicle>
+    <vehicle id="low_023" depart="140.00">
+        <route edges="S5_to_J5 J5_to_J4 J4_to_W4"/>
+    </vehicle>
+    <vehicle id="low_006" depart="150.00">
+        <route edges="E3_to_J3 J3_to_S3"/>
+    </vehicle>
+    <vehicle id="low_024" depart="170.00">
+        <route edges="N1_to_J1 J1_to_J2 J2_to_N2"/>
+    </vehicle>
+    <vehicle id="low_007" depart="180.00">
+        <route edges="W4_to_J4 J4_to_S4"/>
+    </vehicle>
+    <vehicle id="low_025" depart="200.00">
+        <route edges="W1_to_J1 J1_to_J4 J4_to_S4"/>
+    </vehicle>
+    <vehicle id="low_008" depart="210.00">
+        <route edges="S4_to_J4 J4_to_W4"/>
+    </vehicle>
+    <vehicle id="low_053" depart="215.00">
+        <route edges="N1_to_J1 J1_to_J2 J2_to_J3 J3_to_E3"/>
+    </vehicle>
+    <vehicle id="low_026" depart="230.00">
+        <route edges="N2_to_J2 J2_to_J3 J3_to_E3"/>
+    </vehicle>
+    <vehicle id="low_009" depart="240.00">
+        <route edges="E5_to_J5 J5_to_S5"/>
+    </vehicle>
+    <vehicle id="low_045" depart="250.00">
+        <route edges="E3_to_J3 J3_to_J2 J2_to_N2"/>
+    </vehicle>
+    <vehicle id="low_027" depart="260.00">
+        <route edges="E5_to_J5 J5_to_J2 J2_to_N2"/>
+    </vehicle>
+    <vehicle id="low_010" depart="270.00">
+        <route edges="S5_to_J5 J5_to_E5"/>
+    </vehicle>
+    <vehicle id="low_054" depart="275.00">
+        <route edges="W1_to_J1 J1_to_J2 J2_to_J5 J5_to_S5"/>
+    </vehicle>
+    <vehicle id="low_028" depart="290.00">
+        <route edges="S5_to_J5 J5_to_J4 J4_to_W4"/>
+    </vehicle>
+    <vehicle id="low_011" depart="300.00">
+        <route edges="N3_to_J3 J3_to_S3"/>
+    </vehicle>
+    <vehicle id="low_046" depart="310.00">
+        <route edges="S3_to_J3 J3_to_J2 J2_to_N2"/>
+    </vehicle>
+    <vehicle id="low_029" depart="320.00">
+        <route edges="N1_to_J1 J1_to_J2 J2_to_N2"/>
+    </vehicle>
+    <vehicle id="low_012" depart="330.00">
+        <route edges="S3_to_J3 J3_to_N3"/>
+    </vehicle>
+    <vehicle id="low_055" depart="335.00">
+        <route edges="N3_to_J3 J3_to_J2 J2_to_J1 J1_to_W1"/>
+    </vehicle>
+    <vehicle id="low_030" depart="340.00">
+        <route edges="W1_to_J1 J1_to_J4 J4_to_S4"/>
+    </vehicle>
+    <vehicle id="low_013" depart="360.00">
+        <route edges="E5_to_J5 J5_to_S5"/>
+    </vehicle>
+    <vehicle id="low_031" depart="370.00">
+        <route edges="N2_to_J2 J2_to_J3 J3_to_E3"/>
+    </vehicle>
+    <vehicle id="low_014" depart="390.00">
+        <route edges="S5_to_J5 J5_to_E5"/>
+    </vehicle>
+    <vehicle id="low_056" depart="395.00">
+        <route edges="S4_to_J4 J4_to_J1 J1_to_J2 J2_to_J3 J3_to_E3"/>
+    </vehicle>
+    <vehicle id="low_032" depart="400.00">
+        <route edges="E5_to_J5 J5_to_J2 J2_to_N2"/>
+    </vehicle>
+    <vehicle id="low_047" depart="410.00">
+        <route edges="N1_to_J1 J1_to_J4 J4_to_S4"/>
+    </vehicle>
+    <vehicle id="low_015" depart="420.00">
+        <route edges="N1_to_J1 J1_to_W1"/>
+    </vehicle>
+    <vehicle id="low_033" depart="430.00">
+        <route edges="S5_to_J5 J5_to_J4 J4_to_W4"/>
+    </vehicle>
+    <vehicle id="low_016" depart="450.00">
+        <route edges="W1_to_J1 J1_to_N1"/>
+    </vehicle>
+    <vehicle id="low_034" depart="450.00">
+        <route edges="N1_to_J1 J1_to_J2 J2_to_N2"/>
+    </vehicle>
+    <vehicle id="low_057" depart="455.00">
+        <route edges="N1_to_J1 J1_to_J2 J2_to_J3 J3_to_E3"/>
+    </vehicle>
+    <vehicle id="low_035" depart="470.00">
+        <route edges="W1_to_J1 J1_to_J4 J4_to_S4"/>
+    </vehicle>
+    <vehicle id="low_017" depart="480.00">
+        <route edges="W4_to_J4 J4_to_S4"/>
+    </vehicle>
+    <vehicle id="low_036" depart="490.00">
+        <route edges="N2_to_J2 J2_to_J3 J3_to_E3"/>
+    </vehicle>
+    <vehicle id="low_018" depart="510.00">
+        <route edges="S4_to_J4 J4_to_W4"/>
+    </vehicle>
+    <vehicle id="low_058" depart="515.00">
+        <route edges="W1_to_J1 J1_to_J2 J2_to_J5 J5_to_S5"/>
+    </vehicle>
+    <vehicle id="low_037" depart="520.00">
+        <route edges="E5_to_J5 J5_to_J2 J2_to_N2"/>
+    </vehicle>
+    <vehicle id="low_048" depart="530.00">
+        <route edges="W1_to_J1 J1_to_J2 J2_to_N2"/>
+    </vehicle>
+    <vehicle id="low_038" depart="540.00">
+        <route edges="S5_to_J5 J5_to_J4 J4_to_W4"/>
+    </vehicle>
+    <vehicle id="low_039" depart="550.00">
+        <route edges="N1_to_J1 J1_to_J2 J2_to_N2"/>
+    </vehicle>
+    <vehicle id="low_059" depart="555.00">
+        <route edges="N3_to_J3 J3_to_J2 J2_to_J1 J1_to_W1"/>
+    </vehicle>
+    <vehicle id="low_040" depart="560.00">
+        <route edges="W1_to_J1 J1_to_J4 J4_to_S4"/>
+    </vehicle>
+    <vehicle id="low_041" depart="570.00">
+        <route edges="N2_to_J2 J2_to_J3 J3_to_E3"/>
+    </vehicle>
+    <vehicle id="low_042" depart="580.00">
+        <route edges="E5_to_J5 J5_to_J2 J2_to_N2"/>
+    </vehicle>
+    <vehicle id="low_060" depart="585.00">
+        <route edges="S4_to_J4 J4_to_J1 J1_to_J2 J2_to_J3 J3_to_E3"/>
+    </vehicle>
+    <vehicle id="low_043" depart="590.00">
+        <route edges="S5_to_J5 J5_to_J4 J4_to_W4"/>
+    </vehicle>
+</routes>

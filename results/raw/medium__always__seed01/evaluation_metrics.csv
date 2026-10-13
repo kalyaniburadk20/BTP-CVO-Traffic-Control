@@ -1,0 +1,2 @@
+run_id,scenario,strategy,seed,measurement_start,measurement_end,measurement_steps,available_observations,acquired_observations,acquisition_rate,average_queue_length,average_waiting_time,throughput
+medium__always__seed01,medium,always,1,60,600,540,540,540,1.0,6.822222222222222,133.95555555555555,274

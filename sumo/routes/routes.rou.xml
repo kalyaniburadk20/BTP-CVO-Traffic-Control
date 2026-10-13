@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<routes>
+
+    <!-- Car definition -->
+    <vType
+        id="car"
+        accel="2.6"
+        decel="4.5"
+        sigma="0.5"
+        length="5.0"
+        minGap="2.5"
+        maxSpeed="13.89"
+    />
+
+    <!-- North -> South -->
+    <route
+        id="north_to_south"
+        edges="-E0 E2"
+    />
+
+    <!-- South -> North -->
+    <route
+        id="south_to_north"
+        edges="-E2 E0"
+    />
+
+    <!-- East -> West -->
+    <route
+        id="east_to_west"
+        edges="-E1 E3"
+    />
+
+    <!-- West -> East -->
+    <route
+        id="west_to_east"
+        edges="-E3 E1"
+    />
+
+</routes>

@@ -1,0 +1,1 @@
+time,intersection_id,current_action,hypothetical_action,cvo,raw_compute,raw_communication,raw_latency,normalized_compute,normalized_communication,normalized_latency,compute_weight,communication_weight,latency_weight,total_cost,decision

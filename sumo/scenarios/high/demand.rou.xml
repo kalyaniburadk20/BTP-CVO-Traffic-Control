@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<routes>
+
+    <!-- North -> South -->
+    <flow
+        id="high_ns"
+        type="car"
+        route="north_to_south"
+        begin="0"
+        end="600"
+        period="4"
+        departLane="best"
+        departSpeed="max"
+        departPos="base"
+    />
+
+    <!-- South -> North -->
+    <flow
+        id="high_sn"
+        type="car"
+        route="south_to_north"
+        begin="1"
+        end="600"
+        period="4"
+        departLane="best"
+        departSpeed="max"
+        departPos="base"
+    />
+
+    <!-- East -> West -->
+    <flow
+        id="high_ew"
+        type="car"
+        route="east_to_west"
+        begin="2"
+        end="600"
+        period="4"
+        departLane="best"
+        departSpeed="max"
+        departPos="base"
+    />
+
+    <!-- West -> East -->
+    <flow
+        id="high_we"
+        type="car"
+        route="west_to_east"
+        begin="3"
+        end="600"
+        period="4"
+        departLane="best"
+        departSpeed="max"
+        departPos="base"
+    />
+
+</routes>

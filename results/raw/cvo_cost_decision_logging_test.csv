@@ -1,0 +1,3 @@
+time,current_action,hypothetical_action,cvo,raw_compute,raw_communication,raw_latency,normalized_compute,normalized_communication,normalized_latency,compute_weight,communication_weight,latency_weight,total_cost,decision
+10,NS_GREEN,EW_GREEN,1.0,40,2,80,0.4,0.4,0.4,0.3333333333333333,0.3333333333333333,0.3333333333333333,0.4,ACQUIRE
+20,NS_GREEN,NS_GREEN,0.0,40,2,80,0.4,0.4,0.4,0.3333333333333333,0.3333333333333333,0.3333333333333333,0.4,SKIP

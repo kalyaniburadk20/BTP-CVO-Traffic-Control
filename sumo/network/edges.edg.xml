@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<edges>
+
+    <!-- Main roads: 3 lanes per direction -->
+
+    <edge id="J1_to_J2" from="J1" to="J2" numLanes="3" speed="13.89"/>
+    <edge id="J2_to_J1" from="J2" to="J1" numLanes="3" speed="13.89"/>
+
+    <edge id="J2_to_J3" from="J2" to="J3" numLanes="3" speed="13.89"/>
+    <edge id="J3_to_J2" from="J3" to="J2" numLanes="3" speed="13.89"/>
+
+    <!-- Secondary roads: 2 lanes per direction -->
+
+    <edge id="J1_to_J4" from="J1" to="J4" numLanes="2" speed="13.89"/>
+    <edge id="J4_to_J1" from="J4" to="J1" numLanes="2" speed="13.89"/>
+
+    <edge id="J4_to_J5" from="J4" to="J5" numLanes="2" speed="13.89"/>
+    <edge id="J5_to_J4" from="J5" to="J4" numLanes="2" speed="13.89"/>
+
+    <edge id="J2_to_J5" from="J2" to="J5" numLanes="2" speed="13.89"/>
+    <edge id="J5_to_J2" from="J5" to="J2" numLanes="2" speed="13.89"/>
+
+    <!-- External roads: 2 lanes per direction -->
+
+    <!-- J1 -->
+    <edge id="W1_to_J1" from="W1" to="J1" numLanes="2" speed="13.89"/>
+    <edge id="J1_to_W1" from="J1" to="W1" numLanes="2" speed="13.89"/>
+
+    <edge id="N1_to_J1" from="N1" to="J1" numLanes="2" speed="13.89"/>
+    <edge id="J1_to_N1" from="J1" to="N1" numLanes="2" speed="13.89"/>
+
+    <!-- J2 -->
+    <edge id="N2_to_J2" from="N2" to="J2" numLanes="2" speed="13.89"/>
+    <edge id="J2_to_N2" from="J2" to="N2" numLanes="2" speed="13.89"/>
+
+    <!-- J3 -->
+    <edge id="N3_to_J3" from="N3" to="J3" numLanes="2" speed="13.89"/>
+    <edge id="J3_to_N3" from="J3" to="N3" numLanes="2" speed="13.89"/>
+
+    <edge id="E3_to_J3" from="E3" to="J3" numLanes="2" speed="13.89"/>
+    <edge id="J3_to_E3" from="J3" to="E3" numLanes="2" speed="13.89"/>
+
+    <edge id="S3_to_J3" from="S3" to="J3" numLanes="2" speed="13.89"/>
+    <edge id="J3_to_S3" from="J3" to="S3" numLanes="2" speed="13.89"/>
+
+    <!-- J4 -->
+    <edge id="W4_to_J4" from="W4" to="J4" numLanes="2" speed="13.89"/>
+    <edge id="J4_to_W4" from="J4" to="W4" numLanes="2" speed="13.89"/>
+
+    <edge id="S4_to_J4" from="S4" to="J4" numLanes="2" speed="13.89"/>
+    <edge id="J4_to_S4" from="J4" to="S4" numLanes="2" speed="13.89"/>
+
+    <!-- J5 -->
+    <edge id="E5_to_J5" from="E5" to="J5" numLanes="2" speed="13.89"/>
+    <edge id="J5_to_E5" from="J5" to="E5" numLanes="2" speed="13.89"/>
+
+    <edge id="S5_to_J5" from="S5" to="J5" numLanes="2" speed="13.89"/>
+    <edge id="J5_to_S5" from="J5" to="S5" numLanes="2" speed="13.89"/>
+
+</edges>

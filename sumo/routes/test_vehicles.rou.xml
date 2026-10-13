@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<routes>
+
+    <!-- North -> South -->
+    <vehicle
+        id="veh_ns"
+        type="car"
+        route="north_to_south"
+        depart="0"/>
+
+    <!-- South -> North -->
+    <vehicle
+        id="veh_sn"
+        type="car"
+        route="south_to_north"
+        depart="5"/>
+
+    <!-- East -> West -->
+    <vehicle
+        id="veh_ew"
+        type="car"
+        route="east_to_west"
+        depart="10"/>
+
+    <!-- West -> East -->
+    <vehicle
+        id="veh_we"
+        type="car"
+        route="west_to_east"
+        depart="15"/>
+
+    <!-- More vehicles for visual testing -->
+    <vehicle
+        id="veh_ns2"
+        type="car"
+        route="north_to_south"
+        depart="20"/>
+
+    <vehicle
+        id="veh_sn2"
+        type="car"
+        route="south_to_north"
+        depart="25"/>
+
+    <vehicle
+        id="veh_ew2"
+        type="car"
+        route="east_to_west"
+        depart="30"/>
+
+    <vehicle
+        id="veh_we2"
+        type="car"
+        route="west_to_east"
+        depart="35"/>
+
+</routes>

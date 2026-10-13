@@ -1,0 +1,1 @@
+time,intersection_id,north_queue,south_queue,east_queue,west_queue,north_waiting,south_waiting,east_waiting,west_waiting,signal_phase,vehicle_count,arrived_this_step

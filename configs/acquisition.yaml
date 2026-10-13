@@ -1,0 +1,12 @@
+# --------------------------------------------------
+# ACQUISITION POLICY CONFIGURATION
+# --------------------------------------------------
+
+periodic:
+  interval: 5
+
+state_change:
+  threshold: 10
+
+aoi:
+  max_age: 10

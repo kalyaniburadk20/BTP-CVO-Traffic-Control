@@ -1,0 +1,2 @@
+run_id,scenario,strategy,seed,measurement_start,measurement_end,measurement_steps,available_observations,acquired_observations,acquisition_rate,average_queue_length,average_waiting_time,throughput
+high__cvo__seed01,high,cvo,1,60,600,540,540,0,0.0,9.524074074074074,203.88888888888889,462

@@ -1,0 +1,11 @@
+time,policy,decision
+0,Periodic,ACQUIRE
+1,Periodic,SKIP
+2,Periodic,SKIP
+3,Periodic,ACQUIRE
+4,Periodic,SKIP
+5,Periodic,SKIP
+6,Periodic,ACQUIRE
+7,Periodic,SKIP
+8,Periodic,SKIP
+9,Periodic,ACQUIRE

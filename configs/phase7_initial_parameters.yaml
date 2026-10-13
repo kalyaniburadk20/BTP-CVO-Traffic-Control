@@ -1,0 +1,35 @@
+# --------------------------------------------------
+# PHASE 7 — FROZEN INITIAL EXPERIMENTAL PARAMETERS
+# --------------------------------------------------
+
+# Baseline acquisition policies
+periodic:
+  interval: 5
+
+state_change:
+  threshold: 10
+
+aoi:
+  max_age: 10
+
+
+# CVO observation-cost baseline weights
+# Equal weights are the initial baseline.
+cvo_cost:
+  compute_weight: 0.3333333333
+  communication_weight: 0.3333333333
+  latency_weight: 0.3333333334
+
+
+# Reference costs used in Phase 7 validation tests
+# These are test/reference values, not measured hardware costs.
+reference_costs:
+  compute: 100
+  communication: 5
+  latency: 200
+
+
+# Important experimental rule
+# These initial parameters remain frozen during
+# the first experimental run.
+freeze_parameters: true

@@ -1,0 +1,95 @@
+# --------------------------------------------------
+# NETWORK EXPERIMENT CONFIGURATION
+# --------------------------------------------------
+
+simulation:
+  duration: 600
+  warmup: 60
+  measurement_start: 60
+  measurement_end: 600
+
+
+network:
+  intersections:
+    - J1
+    - J2
+    - J3
+    - J4
+    - J5
+
+  observation_budget: 2
+  max_belief_age: 10
+
+
+traffic:
+  scenarios:
+    - low
+    - medium
+    - high
+
+
+strategies:
+  - always
+  - periodic
+  - state_change
+  - aoi
+  - cvo
+
+
+random:
+  seeds:
+    - 1
+    - 2
+    - 3
+
+
+acquisition:
+  periodic_interval: 5
+  state_change_threshold: 10
+  aoi_max_age: 10
+
+
+cvo:
+  hypothetical_east_queue_delta: 5
+
+  cost_weights:
+    compute: 0.3333333333
+    communication: 0.3333333333
+    latency: 0.3333333334
+
+  reference_costs:
+    compute: 100
+    communication: 5
+    latency: 200
+
+
+evaluation:
+  metrics:
+    resource:
+      - acquisition_rate
+      - communication_cost
+      - compute_savings
+      - latency_overhead
+
+    traffic:
+      - average_queue_length
+      - average_waiting_time
+      - throughput
+
+    information:
+      - belief_age
+
+
+  fairness:
+    same_network: true
+    same_traffic_demand: true
+    same_controller: true
+    same_duration: true
+    same_seed: true
+    same_evaluation_procedure: true
+
+
+experiment:
+  freeze_parameters: true
+  save_config_with_results: true
+  unique_run_id: true

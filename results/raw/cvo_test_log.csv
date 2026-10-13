@@ -1,0 +1,3 @@
+time,current_belief,hypothetical_belief,current_action,hypothetical_action,decision_margin,cvo
+10,"NS=30,EW=10","NS=32,EW=12",NS_GREEN,NS_GREEN,20,0.0
+20,"NS=21,EW=20","NS=21,EW=25",NS_GREEN,EW_GREEN,1,1.0

@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<routes>
+
+    
+
+    <trip id="low_001" depart="0" from="N1_to_J1" to="J1_to_W1" />
+    <trip id="low_049" depart="15" from="N1_to_J1" to="J3_to_E3" />
+    <trip id="low_019" depart="20" from="N1_to_J1" to="J2_to_N2" />
+    <trip id="low_002" depart="30" from="W1_to_J1" to="J1_to_N1" />
+    <trip id="low_020" depart="40" from="W1_to_J1" to="J4_to_S4" />
+    <trip id="low_050" depart="55" from="W1_to_J1" to="J5_to_S5" />
+    <trip id="low_003" depart="60" from="N3_to_J3" to="J3_to_E3" />
+    <trip id="low_021" depart="80" from="N2_to_J2" to="J3_to_E3" />
+    <trip id="low_004" depart="90" from="E3_to_J3" to="J3_to_N3" />
+    <trip id="low_051" depart="95" from="N3_to_J3" to="J1_to_W1" />
+    <trip id="low_022" depart="100" from="E5_to_J5" to="J2_to_N2" />
+    <trip id="low_044" depart="110" from="N3_to_J3" to="J2_to_N2" />
+    <trip id="low_005" depart="120" from="S3_to_J3" to="J3_to_E3" />
+    <trip id="low_052" depart="135" from="S4_to_J4" to="J3_to_E3" />
+
+    <trip id="low_023" depart="140" from="S5_to_J5" to="J4_to_W4" />
+
+    <trip id="low_006" depart="150" from="E3_to_J3" to="J3_to_S3" />
+    <trip id="low_024" depart="170" from="N1_to_J1" to="J2_to_N2" />
+    <trip id="low_007" depart="180" from="W4_to_J4" to="J4_to_S4" />
+    <trip id="low_025" depart="200" from="W1_to_J1" to="J4_to_S4" />
+    <trip id="low_008" depart="210" from="S4_to_J4" to="J4_to_W4" />
+    <trip id="low_053" depart="215" from="N1_to_J1" to="J3_to_E3" />
+    <trip id="low_026" depart="230" from="N2_to_J2" to="J3_to_E3" />
+    <trip id="low_009" depart="240" from="E5_to_J5" to="J5_to_S5" />
+    <trip id="low_045" depart="250" from="E3_to_J3" to="J2_to_N2" />
+    <trip id="low_027" depart="260" from="E5_to_J5" to="J2_to_N2" />
+    <trip id="low_010" depart="270" from="S5_to_J5" to="J5_to_E5" />
+    <trip id="low_054" depart="275" from="W1_to_J1" to="J5_to_S5" />
+    <trip id="low_028" depart="290" from="S5_to_J5" to="J4_to_W4" />
+
+    <trip id="low_011" depart="300" from="N3_to_J3" to="J3_to_S3" />
+    <trip id="low_046" depart="310" from="S3_to_J3" to="J2_to_N2" />
+    <trip id="low_029" depart="320" from="N1_to_J1" to="J2_to_N2" />
+    <trip id="low_012" depart="330" from="S3_to_J3" to="J3_to_N3" />
+    <trip id="low_055" depart="335" from="N3_to_J3" to="J1_to_W1" />
+    <trip id="low_030" depart="340" from="W1_to_J1" to="J4_to_S4" />
+    <trip id="low_013" depart="360" from="E5_to_J5" to="J5_to_S5" />
+    <trip id="low_031" depart="370" from="N2_to_J2" to="J3_to_E3" />
+    <trip id="low_014" depart="390" from="S5_to_J5" to="J5_to_E5" />
+    <trip id="low_056" depart="395" from="S4_to_J4" to="J3_to_E3" />
+
+    <trip id="low_032" depart="400" from="E5_to_J5" to="J2_to_N2" />
+    <trip id="low_047" depart="410" from="N1_to_J1" to="J4_to_S4" />
+    <trip id="low_015" depart="420" from="N1_to_J1" to="J1_to_W1" />
+    <trip id="low_033" depart="430" from="S5_to_J5" to="J4_to_W4" />
+
+    <trip id="low_016" depart="450" from="W1_to_J1" to="J1_to_N1" />
+    <trip id="low_034" depart="450" from="N1_to_J1" to="J2_to_N2" />
+    <trip id="low_057" depart="455" from="N1_to_J1" to="J3_to_E3" />
+    <trip id="low_035" depart="470" from="W1_to_J1" to="J4_to_S4" />
+    <trip id="low_017" depart="480" from="W4_to_J4" to="J4_to_S4" />
+    <trip id="low_036" depart="490" from="N2_to_J2" to="J3_to_E3" />
+    <trip id="low_018" depart="510" from="S4_to_J4" to="J4_to_W4" />
+
+
+    
+
+    <trip id="low_058" depart="515" from="W1_to_J1" to="J5_to_S5" />
+    <trip id="low_037" depart="520" from="E5_to_J5" to="J2_to_N2" />
+    <trip id="low_048" depart="530" from="W1_to_J1" to="J2_to_N2" />
+
+
+    
+
+    <trip id="low_038" depart="540" from="S5_to_J5" to="J4_to_W4" />
+
+    <trip id="low_039" depart="550" from="N1_to_J1" to="J2_to_N2" />
+    <trip id="low_059" depart="555" from="N3_to_J3" to="J1_to_W1" />
+    <trip id="low_040" depart="560" from="W1_to_J1" to="J4_to_S4" />
+    <trip id="low_041" depart="570" from="N2_to_J2" to="J3_to_E3" />
+    <trip id="low_042" depart="580" from="E5_to_J5" to="J2_to_N2" />
+    <trip id="low_060" depart="585" from="S4_to_J4" to="J3_to_E3" />
+
+<trip id="low_043" depart="590" from="S5_to_J5" to="J4_to_W4" />
+
+    </routes>
