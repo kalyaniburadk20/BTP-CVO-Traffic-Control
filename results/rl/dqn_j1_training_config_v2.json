@@ -1,0 +1,33 @@
+{
+    "algorithm": "Double DQN with Dueling Q-Network",
+    "replay_type": "Duration-aware SMDP replay",
+    "controlled_intersection": "J1",
+    "episodes": 90,
+    "scenarios": [
+        "low",
+        "medium",
+        "high"
+    ],
+    "training_seed_start": 401,
+    "agent_seed": 43,
+    "state_dimension": 12,
+    "action_dimension": 2,
+    "decision_interval_seconds": 10,
+    "learning_rate": 0.0001,
+    "gamma": 0.99,
+    "replay_capacity": 50000,
+    "batch_size": 64,
+    "epsilon_start": 1.0,
+    "epsilon_end": 0.05,
+    "epsilon_decay_decisions": 4000,
+    "target_update_interval": 200,
+    "training_device": "cpu",
+    "warmup_seconds": 60,
+    "simulation_duration_seconds": 600,
+    "background_control": "Queue-pressure-based controller",
+    "reward_weights": {
+        "queue": 0.1,
+        "waiting": 0.001,
+        "switching_penalty": 0.5
+    }
+}

@@ -1,0 +1,26 @@
+{
+    "algorithm": "Deep Q-Network",
+    "controlled_intersection": "J1",
+    "episodes": 30,
+    "scenarios": [
+        "low",
+        "medium",
+        "high"
+    ],
+    "training_seed_start": 101,
+    "agent_seed": 42,
+    "state_dimension": 12,
+    "action_dimension": 2,
+    "batch_size": 64,
+    "learning_rate": 0.001,
+    "gamma": 0.99,
+    "replay_capacity": 50000,
+    "epsilon_start": 1.0,
+    "epsilon_end": 0.05,
+    "epsilon_decay_steps": 16000,
+    "target_update_interval": 500,
+    "training_device": "cpu",
+    "warmup_seconds": 60,
+    "simulation_duration_seconds": 600,
+    "background_control": "Queue-pressure-based controller"
+}
