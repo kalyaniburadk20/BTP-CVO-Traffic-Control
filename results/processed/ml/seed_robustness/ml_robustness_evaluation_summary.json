@@ -1,0 +1,155 @@
+{
+  "evaluation": "three-fold seed-rotated ML robustness evaluation",
+  "temporal_traffic_prediction": {
+    "folds": 3,
+    "scenario_direction_cells": 12,
+    "macro_average_across_cells": {
+      "Zero": {
+        "MAE": 0.13670020964360582,
+        "RMSE": 0.5225710738133192,
+        "NonzeroMAE": 1.7380740133043224,
+        "Precision": 0.0,
+        "Recall": 0.0,
+        "F1": 0.0
+      },
+      "Persistence": {
+        "MAE": 0.20221174004192868,
+        "RMSE": 0.6272656672974554,
+        "NonzeroMAE": 1.36872581122372,
+        "Precision": 0.24437265926432916,
+        "Recall": 0.2423750794198838,
+        "F1": 0.24320679352584942
+      },
+      "TemporalRF": {
+        "MAE": 0.1581481905609102,
+        "RMSE": 0.41169591566836666,
+        "NonzeroMAE": 1.1116869380369907,
+        "Precision": 0.5401641577863233,
+        "Recall": 0.4062528336371501,
+        "F1": 0.4324326143914639
+      }
+    },
+    "temporal_rf_better_cells": {
+      "MAE_mean": {
+        "Zero": {
+          "better_cells": 2,
+          "total_cells": 12
+        },
+        "Persistence": {
+          "better_cells": 12,
+          "total_cells": 12
+        }
+      },
+      "RMSE_mean": {
+        "Zero": {
+          "better_cells": 12,
+          "total_cells": 12
+        },
+        "Persistence": {
+          "better_cells": 12,
+          "total_cells": 12
+        }
+      },
+      "NonzeroMAE_mean": {
+        "Zero": {
+          "better_cells": 12,
+          "total_cells": 12
+        },
+        "Persistence": {
+          "better_cells": 12,
+          "total_cells": 12
+        }
+      },
+      "F1_mean": {
+        "Zero": {
+          "better_cells": 12,
+          "total_cells": 12
+        },
+        "Persistence": {
+          "better_cells": 12,
+          "total_cells": 12
+        }
+      }
+    },
+    "mean_relative_reduction_vs_persistence_percent": {
+      "MAE": 17.609271602818847,
+      "RMSE": 33.86845062664569,
+      "NonzeroMAE": 17.158368669959067
+    }
+  },
+  "learned_cvo": {
+    "folds": 3,
+    "summary_metrics": {
+      "Always_predict_zero": {
+        "accuracy_mean": 0.8911148209979597,
+        "accuracy_std": 0.0070181607344655,
+        "balanced_accuracy_mean": 0.5,
+        "balanced_accuracy_std": 0.0,
+        "precision_mean": 0.0,
+        "precision_std": 0.0,
+        "recall_mean": 0.0,
+        "recall_std": 0.0,
+        "f1_mean": 0.0,
+        "f1_std": 0.0,
+        "roc_auc_mean": null,
+        "roc_auc_std": 0.0,
+        "average_precision_mean": null,
+        "average_precision_std": 0.0,
+        "brier_score_mean": 0.1088851790020404,
+        "brier_score_std": 0.0070181607344656,
+        "log_loss_mean": null,
+        "log_loss_std": 0.0
+      },
+      "XGBoost_raw_threshold_0.50": {
+        "accuracy_mean": 0.807827861250232,
+        "accuracy_std": 0.0056579119319946,
+        "balanced_accuracy_mean": 0.7592507675688568,
+        "balanced_accuracy_std": 0.0079915043788865,
+        "precision_mean": 0.3227619716983574,
+        "precision_std": 0.0108759618892166,
+        "recall_mean": 0.697066168913612,
+        "recall_std": 0.0164660000120348,
+        "f1_mean": 0.4410152485450609,
+        "f1_std": 0.0068810093524365,
+        "roc_auc_mean": 0.8484762137374315,
+        "roc_auc_std": 0.0080183801564532,
+        "average_precision_mean": 0.4956281695152212,
+        "average_precision_std": 0.006081856656051,
+        "brier_score_mean": 0.130964696025558,
+        "brier_score_std": 0.0015397842563919,
+        "log_loss_mean": 0.4112059598260562,
+        "log_loss_std": 0.0032769454133958
+      },
+      "XGBoost_isotonic_validation_threshold": {
+        "accuracy_mean": 0.8908922277870525,
+        "accuracy_std": 0.0064170319366091,
+        "balanced_accuracy_mean": 0.7031666224177666,
+        "balanced_accuracy_std": 0.0064237497644008,
+        "precision_mean": 0.4988623887964588,
+        "precision_std": 0.0044675149152131,
+        "recall_mean": 0.4631302501802192,
+        "recall_std": 0.011381275709133,
+        "f1_mean": 0.4802448132368231,
+        "f1_std": 0.0042660194790411,
+        "roc_auc_mean": 0.8477783764252683,
+        "roc_auc_std": 0.0080709075312191,
+        "average_precision_mean": 0.4724298569255025,
+        "average_precision_std": 0.0060542633628806,
+        "brier_score_mean": 0.0730764014475973,
+        "brier_score_std": 0.0046926346097787,
+        "log_loss_mean": 0.2552569903848095,
+        "log_loss_std": 0.0128316561380909
+      }
+    },
+    "isotonic_validation_thresholds_by_fold": [
+      0.22,
+      0.21,
+      0.22
+    ]
+  },
+  "outputs": {
+    "report": "results\\processed\\ml\\seed_robustness\\ml_robustness_evaluation_report.md",
+    "plots_directory": "results\\processed\\ml\\seed_robustness\\plots"
+  },
+  "no_training_or_sumo_reruns": true
+}

@@ -1,0 +1,27 @@
+{
+  "evaluation": "three-fold seed-rotated robustness evaluation",
+  "seeds": [
+    1,
+    2,
+    3
+  ],
+  "temporal_traffic_prediction": {
+    "dataset": "results/processed/ml/traffic_prediction_dataset_temporal_v2.csv",
+    "prediction_horizon_seconds": 10,
+    "training_rule": "train on two non-held-out seeds; test on held-out seed",
+    "model": "RandomForestRegressor",
+    "baselines": [
+      "zero queue",
+      "persistence using latest observed queue"
+    ],
+    "folds": 3
+  },
+  "fresh_queue_learned_cvo": {
+    "dataset": "results/processed/ml/learned_cvo_fresh_queue_dataset.csv",
+    "training_rule": "one training seed, one validation/calibration seed, one untouched test seed; rotate all roles",
+    "model": "XGBClassifier with isotonic probability calibration",
+    "threshold_rule": "select F1, then precision, using validation data only",
+    "folds": 3
+  },
+  "note": "Offline evaluation on existing datasets; no SUMO reruns or overwriting of existing model artifacts/results."
+}
