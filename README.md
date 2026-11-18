@@ -347,88 +347,76 @@ These are related concepts but are not interchangeable quantities.
 
 ## 9. Machine Learning Extensions
 
-Machine-learning experiments use datasets derived from the existing SUMO experiment logs.
+The machine-learning extension uses datasets derived from the existing SUMO experiment logs. It contains two distinct tasks: 10-second directional queue prediction and fresh-queue action-divergence estimation. These models are currently evaluated offline; they do not replace the original CVO acquisition-cost logic or network-level observation-budget planner.
 
-### 9.1 Traffic Prediction
+The detailed methodology, commands, results, plots, and limitations are documented in [`docs/ML_EXTENSION.md`](docs/ML_EXTENSION.md).
 
-The traffic-prediction pipeline includes:
+### 9.1 Temporal Traffic Prediction
 
-- Dataset construction from network experiment logs.
-- Direction-wise queue prediction.
-- Temporal features.
-- Observation-age information.
-- Random Forest models.
-- Temporal Random Forest models.
-- XGBoost models.
-- Comparison against zero-prediction and persistence baselines.
+The temporal dataset contains 119,250 rows from 45 simulation runs and five intersections. The model predicts north, south, east, and west queue lengths 10 seconds ahead.
 
-The temporal Random Forest evaluation covers 12 scenario-direction combinations.
+The feature set includes current directional queues and waiting times, signal phase, vehicle count, per-second queue and waiting-time changes, observation age, previous observation interval, and categorical scenario, strategy, and intersection identifiers.
 
-#### Temporal Random Forest Findings
+A multi-output Temporal Random Forest is evaluated against zero-queue and persistence baselines. Evaluation uses three seed-rotated folds: each of seeds 1, 2, and 3 is held out once.
 
-- Temporal Random Forest improves MAE over persistence in all 12 combinations.
-- It improves nonzero-target MAE over persistence in all 12 combinations.
-- It improves F1 over persistence in all 12 combinations.
-- Zero prediction achieves lower overall MAE in all 12 combinations because zero-queue observations are frequent.
-- Temporal Random Forest improves nonzero-target MAE over the zero baseline in the evaluated combinations.
+#### Three-fold results
 
-This demonstrates the importance of evaluating traffic prediction using both overall error and performance on nonzero traffic conditions.
+| Metric | Reduction vs. Persistence |
+|---|---:|
+| MAE | 17.61% |
+| RMSE | 33.87% |
+| Nonzero-target MAE | 17.16% |
 
-The model improves over persistence but does not establish superiority on overall MAE against the zero-prediction baseline.
+Temporal Random Forest improves over persistence on MAE, RMSE, nonzero-target MAE, and congestion-detection F1 in all 12 scenario-direction combinations.
 
-#### Important Traffic-Prediction Files
+**Interpretation:** zero prediction remains a strong overall-MAE baseline because zero-queue observations are frequent. Temporal Random Forest does not beat zero prediction on overall MAE in every combination. Its stronger evidence is the improvement over persistence and its better RMSE, nonzero-target MAE, and congestion-detection F1. Results should not be described as universal superiority over the zero baseline.
 
-- `results/processed/ml/traffic_prediction_dataset.csv`
-- `results/processed/ml/traffic_prediction_dataset_temporal.csv`
-- `results/processed/ml/traffic_prediction_dataset_temporal_v2.csv`
-- `results/processed/ml/traffic_prediction_temporal_rf_metrics.csv`
-- `results/processed/ml/traffic_prediction_xgboost_metrics.csv`
+### 9.2 Learned Fresh-Queue CVO Estimation
 
-### 9.2 Learned CVO
+The fresh-queue CVO dataset contains 26,955 samples, with an approximately 10.89% positive-label rate. Its label indicates whether the controller's selected action differs when actual fresh directional queues are used under the same signal-phase context.
 
-Two learned-CVO datasets are available:
+The evaluated classifier is XGBoost with isotonic probability calibration. Three-fold seed rotation uses one seed for training, one for validation and threshold selection, and one untouched seed for testing; the roles rotate across all three seeds.
 
-- `learned_cvo_dataset.csv`
-- `learned_cvo_fresh_queue_dataset.csv`
+#### Three-fold test results
 
-The fresh-queue extension investigates whether actual directional queue values, rather than only a fixed hypothetical perturbation, would change the controller action.
+| Metric | Isotonic XGBoost | Raw XGBoost (threshold 0.50) |
+|---|---:|---:|
+| Accuracy | 0.8909 | 0.8078 |
+| Balanced accuracy | 0.7032 | 0.7593 |
+| Precision | 0.4989 | 0.3228 |
+| Recall | 0.4631 | 0.6971 |
+| F1 | **0.4802** | 0.4410 |
+| ROC-AUC | 0.8478 | 0.8485 |
+| Average precision | 0.4724 | 0.4956 |
+| Brier score | **0.0731** | 0.1310 |
+| Log loss | **0.2553** | 0.4112 |
 
-The models include:
+The validation-selected threshold was stable across folds: 0.22, 0.21, and 0.22. Isotonic calibration gives better probability quality and a higher F1 in this evaluation, while raw XGBoost has higher recall. The preferred operating point depends on the relative cost of false positives and false negatives.
 
-- Random Forest
-- XGBoost
-- Sigmoid calibration
-- Isotonic calibration
+The always-predict-zero baseline achieves approximately 89.11% accuracy but has balanced accuracy 0.50 and F1 0. Accuracy alone is therefore misleading for this imbalanced dataset.
 
-#### Fresh-Queue Learned CVO Results
+**Important scope:** the classifier estimates fresh-queue action divergence under the constructed dataset's same-timestep labeling rule. Its probability/class output is not a standalone observation-acquisition command. The original CVO cost comparison and network-level observation budget remain separate. The inference module has not been integrated into the live SUMO control loop.
 
-On the held-out evaluation split, isotonic-calibrated XGBoost achieves an F1 score of approximately:
+### 9.3 Reproducibility, Inference, and Reports
 
-$$
-F1 \approx 0.4818
-$$
+New ML scripts:
 
-The calibrated Random Forest model achieves an F1 score of approximately:
+- `src/ml/evaluate_ml_seed_robustness.py` — three-fold seed-rotated offline evaluation.
+- `src/ml/generate_ml_evaluation_report.py` — consolidated Markdown report, JSON summary, and plots.
+- `src/ml/inference.py` — reusable traffic-queue and calibrated fresh-CVO inference functions.
 
-$$
-F1 \approx 0.4605
-$$
+Run the inference smoke test and automated interface tests:
 
-These results indicate that fresh-queue action-divergence prediction is a challenging classification problem.
+```powershell
+python src\ml\inference.py
+python tests\test_ml_inference.py
 
-The model estimates same-timestep action divergence under the deterministic controller and the dataset's labeling assumptions. It should not be interpreted as an independent real-world future observation-value predictor.
 
-#### Important Learned-CVO Files
 
-- `results/processed/ml/learned_cvo_dataset.csv`
-- `results/processed/ml/learned_cvo_metrics.csv`
-- `results/processed/ml/learned_cvo_feature_importance.csv`
-- `results/processed/ml/learned_cvo_fresh_queue_dataset.csv`
-- `results/processed/ml/learned_cvo_fresh_queue_metrics.csv`
-- `results/processed/ml/learned_cvo_fresh_queue_calibration_metrics.csv`
-- `results/processed/ml/learned_cvo_fresh_queue_xgboost_metrics.csv`
 
----
+
+
+
 
 ## 10. Exploratory Reinforcement Learning
 
