@@ -410,13 +410,7 @@ Run the inference smoke test and automated interface tests:
 ```powershell
 python src\ml\inference.py
 python tests\test_ml_inference.py
-
-
-
-
-
-
-
+```
 
 ## 10. Exploratory Reinforcement Learning
 
@@ -509,7 +503,8 @@ BTP-CVO-Traffic-Control/
 │
 ├── docs/
 │   ├── 07_cvo_design_notes.md
-│   └── module_interfaces.md
+│   ├── module_interfaces.md
+│   └── ML_EXTENSION.md
 │
 ├── results/
 │   ├── raw/
@@ -524,6 +519,9 @@ BTP-CVO-Traffic-Control/
 │   ├── cvo/
 │   ├── experiments/
 │   ├── ml/
+│   │   ├── inference.py
+│   │   ├── evaluate_ml_seed_robustness.py
+│   │   └── generate_ml_evaluation_report.py
 │   ├── perception/
 │   └── rl/
 │
@@ -621,6 +619,8 @@ python tests\test_cvo_no_leakage.py
 python tests\test_cvo_boundary.py
 python tests\test_cvo_policy.py
 python tests\test_cvo_sumo.py
+python src\ml\inference.py
+python tests\test_ml_inference.py
 ```
 
 ### Selected Verification Results
@@ -639,6 +639,10 @@ python tests\test_cvo_sumo.py
 | Yellow-transition behaviour | Executed successfully |
 | Network observation-budget behaviour | Verified |
 | Dynamic network planner | Executed successfully |
+| ML inference interface tests | 6/6 passed |
+| Temporal traffic robustness evaluation | 3 held-out seed folds completed |
+| Learned-CVO robustness evaluation | 3 held-out seed folds completed |
+| ML inference smoke test | Completed for both saved models |
 | Network acquisition | Executed successfully |
 | Full controller integration | Executed successfully |
 
@@ -671,6 +675,9 @@ The current implementation has several limitations:
 7. The evaluated single-agent DQN policies do not outperform the pressure-based baselines.
 8. Multi-agent reinforcement learning has not been implemented.
 9. The project does not yet include pinned dependency versions or pytest-compatible automated test discovery.
+10. The three-fold ML robustness evaluation uses the three available simulation seeds and does not establish generalization to unseen cities, networks, or traffic distributions.
+11. The learned-CVO classifier has mean F1 around 0.48 and recall around 0.46 with isotonic calibration in the seed-rotated evaluation; it is not ready to serve as the sole observation-acquisition gate.
+12. The ML inference module is a tested offline interface and has not been integrated into the live SUMO control loop or benchmarked for edge-device latency.
 
 ---
 
