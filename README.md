@@ -696,7 +696,7 @@ Potential future research directions include:
 - Pytest-compatible automated test coverage.
 - Pinned dependencies and a reproducible environment specification.
 
----
+--
 
 ## Project Summary
 
