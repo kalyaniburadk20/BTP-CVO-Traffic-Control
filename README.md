@@ -1,4 +1,4 @@
-# Control-Value-Aware Adaptive Edge Perception for Communication-Efficient Traffic Signal Control
+# Control-Value-Aware Adaptive Edge Perception for Communication-Efficient Traffic Signal control 
 
 A SUMO-based research project investigating intelligent traffic observation acquisition using **Control Value of Observation (CVO)** in a five-intersection traffic network.
 
