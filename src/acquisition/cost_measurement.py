@@ -27,6 +27,7 @@ class CostMeasurementRecorder:
     """Collect raw runtime measurements without changing acquisition policy."""
 
     FIELDNAMES = [
+        "run_seed",
         "simulation_time",
         "intersection_id",
         "metric",
@@ -169,14 +170,20 @@ class CostMeasurementRecorder:
         self,
         output_directory: str | Path,
         scenario: str,
+        seed: int | None = None,
     ) -> Path:
-        """Save a unique raw-measurement CSV; never overwrite an earlier run."""
+        """Save a unique raw-measurement CSV; never overwrite an earlier run.
+
+        The seed is included both in the filename and every CSV row so raw
+        measurements remain traceable to their SUMO simulation run.
+        """
         output_dir = Path(output_directory)
         output_dir.mkdir(parents=True, exist_ok=True)
 
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+        seed_label = f"seed{seed}" if seed is not None else "seed_unspecified"
         output_path = output_dir / (
-            f"learned_cvo_cost_{scenario}_{timestamp}.csv"
+            f"learned_cvo_cost_{scenario}_{seed_label}_{timestamp}.csv"
         )
 
         with output_path.open(
@@ -187,6 +194,10 @@ class CostMeasurementRecorder:
                 fieldnames=self.FIELDNAMES,
             )
             writer.writeheader()
-            writer.writerows(self.records)
+            for record in self.records:
+                writer.writerow({
+                    "run_seed": seed if seed is not None else "",
+                    **record,
+                })
 
         return output_path
