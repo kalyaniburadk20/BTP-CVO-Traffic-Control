@@ -76,7 +76,9 @@ def main():
     assert result["directions"]["south"]["cvo"] == 0.0
     assert result["directions"]["east"]["cvo"] == 1.0
     assert result["directions"]["west"]["cvo"] == 1.0
-    assert result["multi_direction_cvo"] == 1.0
+    assert result["changed_direction_count"] == 2
+    assert result["total_direction_probes"] == 4
+    assert result["multi_direction_cvo"] == 0.5
 
     # Test 3: A large pressure margin remains unchanged under all +5 probes.
     stable_belief = create_belief(50, 0, 2, 0)
@@ -85,6 +87,7 @@ def main():
         item["cvo"] == 0.0
         for item in stable_result["directions"].values()
     )
+    assert stable_result["changed_direction_count"] == 0
     assert stable_result["multi_direction_cvo"] == 0.0
 
     # Test 4: Hypothetical evaluation must not mutate the original belief.
