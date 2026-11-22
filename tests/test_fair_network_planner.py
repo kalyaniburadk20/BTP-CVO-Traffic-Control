@@ -53,9 +53,46 @@ def main():
     )
     assert none_selected == [], none_selected
 
+    # Equal-age forced refreshes rotate instead of always starting at J1.
+    round_robin_planner = NetworkObservationPlanner(
+        observation_budget=2,
+        max_belief_age=10,
+        age_priority_on_ties=True,
+    )
+    forced_costs = {i: 0.9 for i in ids}  # Keep non-forced CVO candidates ineligible.
+
+    first_batch = round_robin_planner.select_intersections(
+        cvo_values=cvo,
+        cost_values=forced_costs,
+        decision_margins=margins,
+        belief_ages={i: 10 for i in ids},
+    )
+    assert first_batch == ["J1", "J2"], first_batch
+
+    # J1/J2 were refreshed; J3/J4/J5 are now the stale candidates.
+    second_batch = round_robin_planner.select_intersections(
+        cvo_values=cvo,
+        cost_values=forced_costs,
+        decision_margins=margins,
+        belief_ages={"J1": 1, "J2": 1, "J3": 11, "J4": 11, "J5": 11},
+    )
+    assert second_batch == ["J3", "J4"], second_batch
+
+    # The remaining stale intersection is selected next.
+    third_batch = round_robin_planner.select_intersections(
+        cvo_values=cvo,
+        cost_values=forced_costs,
+        decision_margins=margins,
+        belief_ages={"J1": 2, "J2": 2, "J3": 1, "J4": 1, "J5": 12},
+    )
+    assert third_batch == ["J5"], third_batch
+
     # Budget remains a hard upper bound.
     assert len(fair_selected) <= 2
-    print("Fair network planner tests passed: 5/5")
+    assert all(len(batch) <= 2 for batch in (
+        first_batch, second_batch, third_batch
+    ))
+    print("Fair network planner tests passed: 6/6")
 
 
 if __name__ == "__main__":
