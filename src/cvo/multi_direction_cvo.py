@@ -68,10 +68,12 @@ class MultiDirectionHypotheticalGenerator:
     def evaluate(self, current_belief, controller):
         """Evaluate action divergence for each independent directional change.
 
-        Returns per-direction hypothetical actions and binary CVO values.
-        multi_direction_cvo is 1 if at least one tested direction changes the
-        selected action; otherwise it is 0. This is a sensitivity summary,
-        not a probability that a real observation will change the action.
+        Returns per-direction hypothetical actions and binary action-divergence
+        values. multi_direction_cvo is the fraction of directional probes that
+        change the selected action (changed probes / four total probes).
+
+        This normalized sensitivity score is not a probability that a real
+        observation will change the action. The four probes are equally weighted.
         """
         if controller is None:
             raise ValueError("controller is required.")
@@ -91,12 +93,20 @@ class MultiDirectionHypotheticalGenerator:
                 ),
             }
 
-        overall_cvo = max(
+        changed_direction_count = sum(
             result["cvo"] for result in directional_results.values()
+        )
+        total_direction_probes = len(directional_results)
+        multi_direction_cvo = (
+            changed_direction_count / total_direction_probes
+            if total_direction_probes
+            else 0.0
         )
 
         return {
             "current_action": current_action,
             "directions": directional_results,
-            "multi_direction_cvo": overall_cvo,
+            "changed_direction_count": changed_direction_count,
+            "total_direction_probes": total_direction_probes,
+            "multi_direction_cvo": multi_direction_cvo,
         }
