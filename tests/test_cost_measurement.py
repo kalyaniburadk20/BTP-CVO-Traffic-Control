@@ -99,9 +99,11 @@ class TestCostMeasurementRecorder(unittest.TestCase):
         recorder.measure_observation_read(2.0, "J2", lambda: state)
 
         with tempfile.TemporaryDirectory() as temp_dir:
-            output_path = recorder.save_csv(temp_dir, "low")
+            output_path = recorder.save_csv(
+                temp_dir, "low", seed=3
+            )
             self.assertTrue(output_path.is_file())
-            self.assertIn("learned_cvo_cost_low_", output_path.name)
+            self.assertIn("learned_cvo_cost_low_seed3_", output_path.name)
 
             with output_path.open(
                 "r", newline="", encoding="utf-8"
@@ -109,9 +111,11 @@ class TestCostMeasurementRecorder(unittest.TestCase):
                 rows = list(csv.DictReader(input_file))
 
         self.assertEqual(len(rows), 2)
+        self.assertEqual(rows[0]["run_seed"], "3")
         self.assertEqual(
             set(rows[0]),
             {
+                "run_seed",
                 "simulation_time",
                 "intersection_id",
                 "metric",
