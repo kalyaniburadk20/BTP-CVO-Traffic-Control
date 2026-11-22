@@ -69,9 +69,19 @@ def main():
         default="low",
         help="Traffic scenario (default: low).",
     )
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=1,
+        help="Reproducible SUMO random seed (default: 1).",
+    )
     args = parser.parse_args()
 
+    if args.seed < 0:
+        parser.error("--seed must be greater than or equal to 0")
+
     scenario = args.scenario
+    seed = args.seed
     sumo_config = os.path.join(
         ".", "sumo", "configs", f"{scenario}_network.sumocfg"
     )
@@ -83,7 +93,15 @@ def main():
     # Load the trained/calibrated artifact once; reuse it at each timestep.
     learned_cvo_artifact = load_fresh_cvo_model()
 
-    traci.start(["sumo", "-c", sumo_config])
+    # SUMO documents --seed as the reproducible RNG initializer. Different
+    # integer values produce distinct, repeatable simulation runs.
+    traci.start([
+        "sumo",
+        "-c",
+        sumo_config,
+        "--seed",
+        str(seed),
+    ])
 
     try:
         beliefs = {i: Belief() for i in INTERSECTIONS}
@@ -142,6 +160,7 @@ def main():
             executors[intersection_id].initialize()
 
         print(f"Traffic scenario: {scenario}")
+        print(f"SUMO random seed: {seed}")
         print("SUMO configuration:", sumo_config)
         print("Loaded calibrated fresh-CVO model.")
         print(
@@ -268,6 +287,7 @@ def main():
         measurement_path = measurement_recorder.save_csv(
             output_directory=output_directory,
             scenario=scenario,
+            seed=seed,
         )
         print()
         print("Measured local runtime and payload summary:")
