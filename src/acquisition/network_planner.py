@@ -140,9 +140,14 @@ class NetworkObservationPlanner:
             ) % len(ordered_ids)
             for intersection_id in ordered_ids
         }
-        forced.sort(
-            key=lambda item: (-item[1], cyclic_rank[item[0]])
-        )
+        if self.age_priority_on_ties:
+            forced.sort(
+                key=lambda item: (-item[1], cyclic_rank[item[0]])
+            )
+        else:
+            # Preserve original deterministic ordering when experimental
+            # fairness is disabled.
+            forced.sort(key=lambda item: (-item[1], item[0]))
 
         if self.age_priority_on_ties:
             # CVO remains the primary criterion. If CVO is tied, refresh
