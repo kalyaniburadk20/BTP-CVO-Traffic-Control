@@ -31,6 +31,7 @@ from src.control.network_controller import NetworkSignalController
 from src.control.network_signal_executor import NetworkSignalExecutor
 from src.cvo.cvo import calculate_decision_margin
 from src.cvo.observation_cost import ObservationCost
+from src.acquisition.cost_measurement import CostMeasurementRecorder
 from src.acquisition.network_planner import NetworkObservationPlanner
 from src.ml.inference import load_fresh_cvo_model
 from src.ml.network_cvo import predict_network_fresh_cvo
@@ -113,6 +114,7 @@ def main():
         selection_counts = {i: 0 for i in INTERSECTIONS}
         max_selected = 0
         total_selected = 0
+        measurement_recorder = CostMeasurementRecorder()
 
         # Follow the original experiment's 60-second warm-up window.
         # Signals follow their SUMO programs during this diagnostic warm-up.
@@ -124,7 +126,13 @@ def main():
         current_time = traci.simulation.getTime()
 
         for intersection_id in INTERSECTIONS:
-            state = get_intersection_traffic_state(intersection_id)
+            state = measurement_recorder.measure_observation_read(
+                simulation_time=current_time,
+                intersection_id=intersection_id,
+                operation=lambda i=intersection_id: (
+                    get_intersection_traffic_state(i)
+                ),
+            )
             beliefs[intersection_id].update(
                 Observation(
                     traffic_state=state,
@@ -158,11 +166,16 @@ def main():
 
             # Predict from the currently available beliefs. Unselected
             # intersections intentionally retain older beliefs.
-            learned_cvo_probabilities = predict_network_fresh_cvo(
-                beliefs=beliefs,
-                current_time=current_time,
-                scenario=scenario,
-                artifact=learned_cvo_artifact,
+            learned_cvo_probabilities = (
+                measurement_recorder.measure_model_inference(
+                    simulation_time=current_time,
+                    operation=lambda: predict_network_fresh_cvo(
+                        beliefs=beliefs,
+                        current_time=current_time,
+                        scenario=scenario,
+                        artifact=learned_cvo_artifact,
+                    ),
+                )
             )
 
             decision_margins = {
@@ -195,7 +208,13 @@ def main():
             # Acquire only selected intersections.
             for intersection_id in selected:
                 selection_counts[intersection_id] += 1
-                state = get_intersection_traffic_state(intersection_id)
+                state = measurement_recorder.measure_observation_read(
+                    simulation_time=current_time,
+                    intersection_id=intersection_id,
+                    operation=lambda i=intersection_id: (
+                        get_intersection_traffic_state(i)
+                    ),
+                )
                 beliefs[intersection_id].update(
                     Observation(
                         traffic_state=state,
@@ -239,8 +258,26 @@ def main():
             "or guarantees of traffic improvement."
         )
         print(
-            "Note: observation costs are reference/test values, not "
-            "measured compute, communication, or hardware latency."
+            "Note: observation costs used by the planner are still fixed "
+            "reference/test values in this benchmark."
+        )
+
+        output_directory = os.path.join(
+            ".", "results", "processed", "ml", "cost_measurements"
+        )
+        measurement_path = measurement_recorder.save_csv(
+            output_directory=output_directory,
+            scenario=scenario,
+        )
+        print()
+        print("Measured local runtime and payload summary:")
+        for metric, stats in measurement_recorder.summarize().items():
+            print(metric, stats)
+        print("Raw cost measurements saved to:", measurement_path)
+        print(
+            "Scope: model inference and SUMO/TraCI read times are local "
+            "wall-clock measurements; payload bytes are serialized-state "
+            "sizes. No real network-transfer latency is measured."
         )
 
     finally:
