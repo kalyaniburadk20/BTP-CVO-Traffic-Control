@@ -57,6 +57,7 @@ def main():
         planner = NetworkObservationPlanner(
             observation_budget=OBSERVATION_BUDGET,
             max_belief_age=MAX_BELIEF_AGE,
+            age_priority_on_ties=True,
         )
 
         direction_flip_counts = {
