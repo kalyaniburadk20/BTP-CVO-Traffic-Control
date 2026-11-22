@@ -11,10 +11,10 @@ from src.acquisition.network_planner import NetworkObservationPlanner
 
 
 def main():
-    ids = ["J1", "J2", "J3", "J4"]
+    ids = ["J1", "J2", "J3", "J4", "J5"]
     cvo = {i: 0.5 for i in ids}
     costs = {i: 0.4 for i in ids}
-    margins = {"J1": 100, "J2": 90, "J3": 80, "J4": 70}
+    margins = {"J1": 100, "J2": 90, "J3": 80, "J4": 70, "J5": 60}
     ages = {"J1": 1, "J2": 4, "J3": 3, "J4": 0}
 
     # Default mode preserves original CVO-then-margin ordering.
@@ -39,7 +39,7 @@ def main():
         cvo_values=cvo,
         cost_values=costs,
         decision_margins=margins,
-        belief_ages={"J1": 0, "J2": 11, "J3": 12, "J4": 0},
+        belief_ages={"J1": 0, "J2": 11, "J3": 12, "J4": 0, "J5": 0},
     )
     assert forced_selected == ["J3", "J2"], forced_selected
 
