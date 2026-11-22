@@ -38,7 +38,7 @@ from src.ml.network_cvo import predict_network_fresh_cvo
 SUMO_CONFIG = r".\sumo\configs\low_network.sumocfg"
 SCENARIO = "low"
 INTERSECTIONS = ["J1", "J2", "J3", "J4", "J5"]
-SIMULATION_STEPS = 10
+SIMULATION_STEPS = 20  # Long enough to observe multiple forced-refresh batches.
 
 OBSERVATION_BUDGET = 2
 MAX_BELIEF_AGE = 10.0
