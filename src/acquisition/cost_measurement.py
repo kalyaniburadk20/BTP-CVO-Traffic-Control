@@ -122,7 +122,7 @@ class CostMeasurementRecorder:
         return float(ordered[index])
 
     def summarize(self) -> dict[str, dict[str, float]]:
-        """Return count/mean/median/p95/max for each metric."""
+        """Return runtime and payload-size statistics for each metric."""
         summary: dict[str, dict[str, float]] = {}
         metric_names = sorted({row["metric"] for row in self.records})
 
@@ -131,28 +131,37 @@ class CostMeasurementRecorder:
                 row for row in self.records
                 if row["metric"] == metric
             ]
-
-            if metric == "payload_serialization_ms":
-                values = [
-                    float(row["payload_bytes"]) for row in rows
-                ]
-                value_name = "payload_bytes"
-            else:
-                values = [
-                    float(row["duration_ms"]) for row in rows
-                ]
-                value_name = "duration_ms"
-
-            if not values:
-                continue
-
-            summary[metric] = {
-                "count": float(len(values)),
-                f"mean_{value_name}": float(statistics.mean(values)),
-                f"median_{value_name}": float(statistics.median(values)),
-                f"p95_{value_name}": self._percentile(values, 95),
-                f"max_{value_name}": float(max(values)),
+            durations = [
+                float(row["duration_ms"]) for row in rows
+            ]
+            stats = {
+                "count": float(len(durations)),
+                "mean_duration_ms": float(statistics.mean(durations)),
+                "median_duration_ms": float(statistics.median(durations)),
+                "p95_duration_ms": self._percentile(durations, 95),
+                "max_duration_ms": float(max(durations)),
             }
+
+            payload_sizes = [
+                float(row["payload_bytes"])
+                for row in rows
+                if row["payload_bytes"] != ""
+            ]
+            if payload_sizes:
+                stats.update({
+                    "mean_payload_bytes": float(
+                        statistics.mean(payload_sizes)
+                    ),
+                    "median_payload_bytes": float(
+                        statistics.median(payload_sizes)
+                    ),
+                    "p95_payload_bytes": self._percentile(
+                        payload_sizes, 95
+                    ),
+                    "max_payload_bytes": float(max(payload_sizes)),
+                })
+
+            summary[metric] = stats
 
         return summary
 
