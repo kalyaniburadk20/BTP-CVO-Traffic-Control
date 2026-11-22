@@ -30,7 +30,7 @@ from src.cvo.observation_cost import ObservationCost
 from src.acquisition.network_planner import NetworkObservationPlanner
 
 
-SUMO_CONFIG = r".\\sumo\\configs\\low_network.sumocfg"
+SUMO_CONFIG = r".\sumo\configs\low_network.sumocfg"
 INTERSECTIONS = ["J1", "J2", "J3", "J4", "J5"]
 SIMULATION_STEPS = 10
 OBSERVATION_BUDGET = 2
