@@ -416,7 +416,7 @@ Run the inference smoke test and automated interface tests:
 ```powershell
 python src\ml\inference.py
 python tests\test_ml_inference.py
-~~~
+```
 
 ### 9.4 Local Observation-Cost Measurement
 
