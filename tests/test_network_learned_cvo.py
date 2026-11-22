@@ -9,6 +9,7 @@ observation cost, and applies the existing network observation budget.
 It does not retrain or overwrite any ML artifact.
 """
 
+import argparse
 import os
 import sys
 
@@ -35,8 +36,6 @@ from src.ml.inference import load_fresh_cvo_model
 from src.ml.network_cvo import predict_network_fresh_cvo
 
 
-SUMO_CONFIG = r".\sumo\configs\low_network.sumocfg"
-SCENARIO = "low"
 INTERSECTIONS = ["J1", "J2", "J3", "J4", "J5"]
 SIMULATION_STEPS = 20  # Long enough to observe multiple forced-refresh batches.
 
@@ -58,10 +57,31 @@ REFERENCE_COSTS = {
 
 
 def main():
+    parser = argparse.ArgumentParser(
+        description="Run learned-CVO acquisition on a SUMO traffic scenario."
+    )
+    parser.add_argument(
+        "scenario",
+        nargs="?",
+        choices=("low", "medium", "high"),
+        default="low",
+        help="Traffic scenario (default: low).",
+    )
+    args = parser.parse_args()
+
+    scenario = args.scenario
+    sumo_config = os.path.join(
+        ".", "sumo", "configs", f"{scenario}_network.sumocfg"
+    )
+    if not os.path.isfile(sumo_config):
+        raise FileNotFoundError(
+            f"SUMO network configuration not found: {sumo_config}"
+        )
+
     # Load the trained/calibrated artifact once; reuse it at each timestep.
     learned_cvo_artifact = load_fresh_cvo_model()
 
-    traci.start(["sumo", "-c", SUMO_CONFIG])
+    traci.start(["sumo", "-c", sumo_config])
 
     try:
         beliefs = {i: Belief() for i in INTERSECTIONS}
@@ -106,6 +126,8 @@ def main():
                 )
             )
 
+        print(f"Traffic scenario: {scenario}")
+        print("SUMO configuration:", sumo_config)
         print("Loaded calibrated fresh-CVO model.")
         print("Calibration:", learned_cvo_artifact["calibration_method"])
         print(
@@ -128,7 +150,7 @@ def main():
             learned_cvo_probabilities = predict_network_fresh_cvo(
                 beliefs=beliefs,
                 current_time=current_time,
-                scenario=SCENARIO,
+                scenario=scenario,
                 artifact=learned_cvo_artifact,
             )
 
