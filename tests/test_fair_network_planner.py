@@ -15,7 +15,7 @@ def main():
     cvo = {i: 0.5 for i in ids}
     costs = {i: 0.4 for i in ids}
     margins = {"J1": 100, "J2": 90, "J3": 80, "J4": 70, "J5": 60}
-    ages = {"J1": 1, "J2": 4, "J3": 3, "J4": 0}
+    ages = {"J1": 1, "J2": 4, "J3": 3, "J4": 0, "J5": 0}
 
     # Default mode preserves original CVO-then-margin ordering.
     original_planner = NetworkObservationPlanner(observation_budget=2)
