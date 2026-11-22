@@ -16,9 +16,14 @@ from __future__ import annotations
 import argparse
 import csv
 import math
+import sys
 from datetime import datetime
 from pathlib import Path
 from statistics import mean, median
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 import traci
 
@@ -114,7 +119,7 @@ def main() -> None:
     if not 0.0 <= args.candidate_cost <= 1.0:
         parser.error("--candidate-cost must be between 0 and 1")
 
-    project_root = Path(__file__).resolve().parents[1]
+    project_root = PROJECT_ROOT
     sumo_config = project_root / "sumo" / "configs" / f"{args.scenario}_network.sumocfg"
     if not sumo_config.is_file():
         raise FileNotFoundError(f"SUMO network configuration not found: {sumo_config}")
