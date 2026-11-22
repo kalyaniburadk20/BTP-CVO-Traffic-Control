@@ -192,6 +192,7 @@ def main() -> None:
             for probability in probabilities.values():
                 probabilities_all.append(float(probability))
 
+            selections_by_threshold = {}
             for threshold in thresholds:
                 selected = planners[threshold].select_intersections(
                     cvo_values=probabilities,
@@ -202,11 +203,15 @@ def main() -> None:
                     decision_margins=margins,
                     belief_ages=ages,
                 )
+                selections_by_threshold[threshold] = selected
                 threshold_stats = stats[threshold]
                 raw_eligible_ids = {
                     intersection_id
                     for intersection_id, probability in probabilities.items()
-                    if float(probability) > threshold
+                    if (
+                        float(probability) > threshold
+                        and ages[intersection_id] < MAX_BELIEF_AGE
+                    )
                 }
                 forced_selected = [
                     intersection_id for intersection_id in selected
@@ -246,15 +251,7 @@ def main() -> None:
                     })
 
             # Apply only the existing 0.4-cost baseline policy to SUMO.
-            baseline_selected = planners[baseline_cost].select_intersections(
-                cvo_values=probabilities,
-                cost_values={
-                    intersection_id: baseline_cost
-                    for intersection_id in INTERSECTIONS
-                },
-                decision_margins=margins,
-                belief_ages=ages,
-            )
+            baseline_selected = selections_by_threshold[baseline_cost]
             for intersection_id in baseline_selected:
                 state = get_intersection_traffic_state(intersection_id)
                 beliefs[intersection_id].update(
