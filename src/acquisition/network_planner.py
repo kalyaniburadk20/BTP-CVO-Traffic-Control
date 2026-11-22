@@ -37,6 +37,9 @@ class NetworkObservationPlanner:
         self.observation_budget = observation_budget
         self.max_belief_age = max_belief_age
         self.age_priority_on_ties = age_priority_on_ties
+        # Remember the last forced-refresh selection so equal-age stale
+        # intersections are served in round-robin order.
+        self._last_forced_selection = None
 
     def select_intersections(
         self,
@@ -120,8 +123,26 @@ class NetworkObservationPlanner:
             elif cvo > cost:
                 eligible.append((intersection_id, cvo, age, margin))
 
-        # Among forced refreshes, serve the oldest beliefs first.
-        forced.sort(key=lambda item: (-item[1], item[0]))
+        # Among forced refreshes, serve the oldest beliefs first. When ages
+        # tie, rotate the order after the last forced selection so that a
+        # low intersection ID is not always selected first.
+        ordered_ids = sorted(intersection_ids)
+        if self._last_forced_selection in ordered_ids:
+            start_index = (
+                ordered_ids.index(self._last_forced_selection) + 1
+            ) % len(ordered_ids)
+        else:
+            start_index = 0
+
+        cyclic_rank = {
+            intersection_id: (
+                ordered_ids.index(intersection_id) - start_index
+            ) % len(ordered_ids)
+            for intersection_id in ordered_ids
+        }
+        forced.sort(
+            key=lambda item: (-item[1], cyclic_rank[item[0]])
+        )
 
         if self.age_priority_on_ties:
             # CVO remains the primary criterion. If CVO is tied, refresh
@@ -139,10 +160,15 @@ class NetworkObservationPlanner:
 
         selected = []
 
+        selected_forced = []
         for intersection_id, age in forced:
             if len(selected) >= self.observation_budget:
                 break
             selected.append(intersection_id)
+            selected_forced.append(intersection_id)
+
+        if selected_forced:
+            self._last_forced_selection = selected_forced[-1]
 
         for intersection_id, cvo, age, margin in eligible:
             if len(selected) >= self.observation_budget:
