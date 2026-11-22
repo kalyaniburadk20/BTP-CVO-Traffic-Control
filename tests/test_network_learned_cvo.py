@@ -72,8 +72,8 @@ def main():
     parser.add_argument(
         "--seed",
         type=int,
-        default=1,
-        help="Reproducible SUMO random seed (default: 1).",
+        default=23423,
+        help="Reproducible SUMO random seed (default: SUMO's 23423).",
     )
     args = parser.parse_args()
 
