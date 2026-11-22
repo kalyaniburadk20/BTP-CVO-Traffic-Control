@@ -37,7 +37,8 @@ from src.ml.network_cvo import predict_network_fresh_cvo
 
 
 INTERSECTIONS = ["J1", "J2", "J3", "J4", "J5"]
-SIMULATION_STEPS = 20  # Long enough to observe multiple forced-refresh batches.
+WARMUP_STEPS = 60  # Matches the original network experiment warm-up.
+SIMULATION_STEPS = 60  # Measure the next 60 seconds after warm-up.
 
 OBSERVATION_BUDGET = 2
 MAX_BELIEF_AGE = 10.0
@@ -113,8 +114,13 @@ def main():
         max_selected = 0
         total_selected = 0
 
-        # Bootstrap each belief with one actual SUMO observation.
-        traci.simulationStep()
+        # Follow the original experiment's 60-second warm-up window.
+        # Signals follow their SUMO programs during this diagnostic warm-up.
+        print(f"Running {WARMUP_STEPS}-second warm-up...")
+        for _ in range(WARMUP_STEPS):
+            traci.simulationStep()
+
+        # Bootstrap beliefs after warm-up using actual SUMO observations.
         current_time = traci.simulation.getTime()
 
         for intersection_id in INTERSECTIONS:
@@ -125,10 +131,15 @@ def main():
                     timestamp=current_time,
                 )
             )
+            executors[intersection_id].initialize()
 
         print(f"Traffic scenario: {scenario}")
         print("SUMO configuration:", sumo_config)
         print("Loaded calibrated fresh-CVO model.")
+        print(
+            f"Measurement window: {current_time:.0f} to "
+            f"{current_time + SIMULATION_STEPS:.0f} seconds"
+        )
         print("Calibration:", learned_cvo_artifact["calibration_method"])
         print(
             "Model classification threshold (reported, not used as the "
