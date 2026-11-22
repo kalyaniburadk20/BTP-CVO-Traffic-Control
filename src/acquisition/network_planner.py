@@ -4,35 +4,46 @@
 
 class NetworkObservationPlanner:
     """
-    Centralized planner for selecting which
-    intersections should acquire observations.
+    Centralized planner for selecting which intersections
+    should acquire observations.
 
     Selection is based on:
-        1. CVO > observation cost
-        2. Higher CVO first
-        3. Decision margin as tie-breaker
-        4. Network-wide observation budget
+        1. Forced refresh for beliefs at/above max_belief_age
+        2. CVO > observation cost
+        3. Higher CVO first
+        4. Optional belief-age tie-break before decision margin
+        5. Network-wide observation budget
+
+    age_priority_on_ties defaults to False to preserve the original
+    planner's selection behavior. Experimental policies can enable it
+    to reduce repeated preference for the same high-margin intersection.
     """
 
     def __init__(
         self,
         observation_budget=2,
-        max_belief_age=10.0
+        max_belief_age=10.0,
+        age_priority_on_ties=False,
     ):
         if observation_budget <= 0:
-            raise ValueError(
-                "observation_budget must be positive."
-            )
+            raise ValueError("observation_budget must be positive.")
+
+        if max_belief_age < 0:
+            raise ValueError("max_belief_age cannot be negative.")
+
+        if not isinstance(age_priority_on_ties, bool):
+            raise TypeError("age_priority_on_ties must be a boolean.")
 
         self.observation_budget = observation_budget
         self.max_belief_age = max_belief_age
+        self.age_priority_on_ties = age_priority_on_ties
 
     def select_intersections(
         self,
         cvo_values,
         cost_values,
         decision_margins,
-        belief_ages=None
+        belief_ages=None,
     ):
         """
         Select intersections for observation.
@@ -40,28 +51,26 @@ class NetworkObservationPlanner:
         Parameters
         ----------
         cvo_values : dict
-            {intersection_id: cvo}
+            {intersection_id: normalized CVO score}
 
         cost_values : dict
-            {intersection_id: total_cost}
+            {intersection_id: total normalized observation cost}
 
         decision_margins : dict
-            {intersection_id: decision_margin}
+            {intersection_id: decision margin}
 
-        belief_ages : dict
-            {intersection_id: belief_age}
+        belief_ages : dict, optional
+            {intersection_id: age of the current belief}
 
         Returns
         -------
         list
-            Selected intersection IDs.
+            Selected intersection IDs, up to observation_budget.
         """
 
-        intersection_ids = set(
-            cvo_values.keys()
-        )
+        intersection_ids = set(cvo_values.keys())
 
-                # Older callers may not provide belief ages.
+        # Older callers may not provide belief ages.
         # Without age information, assume no forced refresh.
         if belief_ages is None:
             belief_ages = {
@@ -69,28 +78,19 @@ class NetworkObservationPlanner:
                 for intersection_id in intersection_ids
             }
 
-        if intersection_ids != set(
-            cost_values.keys()
-        ):
+        if intersection_ids != set(cost_values.keys()):
             raise ValueError(
-                "cvo_values and cost_values "
-                "must contain the same intersections."
+                "cvo_values and cost_values must contain the same intersections."
             )
 
-        if intersection_ids != set(
-            decision_margins.keys()
-        ):
+        if intersection_ids != set(decision_margins.keys()):
             raise ValueError(
-                "cvo_values and decision_margins "
-                "must contain the same intersections."
+                "cvo_values and decision_margins must contain the same intersections."
             )
 
-        if intersection_ids != set(
-            belief_ages.keys()
-        ):
+        if intersection_ids != set(belief_ages.keys()):
             raise ValueError(
-                "cvo_values and belief_ages "
-                "must contain the same intersections."
+                "cvo_values and belief_ages must contain the same intersections."
             )
 
         forced = []
@@ -102,8 +102,8 @@ class NetworkObservationPlanner:
             margin = decision_margins[intersection_id]
             age = belief_ages[intersection_id]
 
-            if cvo < 0:
-                raise ValueError("CVO cannot be negative.")
+            if cvo < 0 or cvo > 1:
+                raise ValueError("CVO must be between 0 and 1.")
 
             if cost < 0:
                 raise ValueError("Observation cost cannot be negative.")
@@ -114,17 +114,28 @@ class NetworkObservationPlanner:
             if age < 0:
                 raise ValueError("Belief age cannot be negative.")
 
-            # Prioritize stale beliefs before CVO-eligible intersections.
+            # Stale beliefs are prioritized before CVO-eligible candidates.
             if age >= self.max_belief_age:
                 forced.append((intersection_id, age))
             elif cvo > cost:
-                eligible.append((intersection_id, cvo, margin))
+                eligible.append((intersection_id, cvo, age, margin))
 
+        # Among forced refreshes, serve the oldest beliefs first.
         forced.sort(key=lambda item: (-item[1], item[0]))
-        eligible.sort(
-            key=lambda item: (item[1], item[2]),
-            reverse=True
-        )
+
+        if self.age_priority_on_ties:
+            # CVO remains the primary criterion. If CVO is tied, refresh
+            # the older belief first, then use decision margin.
+            eligible.sort(
+                key=lambda item: (item[1], item[2], item[3]),
+                reverse=True,
+            )
+        else:
+            # Preserve the original CVO-then-margin selection order.
+            eligible.sort(
+                key=lambda item: (item[1], item[3]),
+                reverse=True,
+            )
 
         selected = []
 
@@ -133,7 +144,7 @@ class NetworkObservationPlanner:
                 break
             selected.append(intersection_id)
 
-        for intersection_id, cvo, margin in eligible:
+        for intersection_id, cvo, age, margin in eligible:
             if len(selected) >= self.observation_budget:
                 break
             if intersection_id not in selected:
