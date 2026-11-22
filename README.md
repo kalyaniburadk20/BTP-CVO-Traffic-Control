@@ -1,4 +1,4 @@
-# Control-Value-Aware Adaptive Edge Perception for Communication-Efficient Traffic Signal control 
+# Control-Value-Aware Adaptive Edge Perception for Communication-Efficient Traffic Signal Control
 
 A SUMO-based research project investigating intelligent traffic observation acquisition using **Control Value of Observation (CVO)** in a five-intersection traffic network.
 
@@ -17,6 +17,8 @@ The project implements and evaluates adaptive observation-acquisition strategies
 7. [Original Network Experiments](#7-original-network-experiments)
 8. [CVO Sensitivity Analysis](#8-cvo-sensitivity-analysis)
 9. [Machine Learning Extensions](#9-machine-learning-extensions)
+    - [Local Observation-Cost Measurement](#94-local-observation-cost-measurement)
+    - [Learned-CVO Cost-Threshold Sensitivity](#95-learned-cvo-acquisition-cost-threshold-sensitivity)
 10. [Exploratory Reinforcement Learning](#10-exploratory-reinforcement-learning)
 11. [Experimental Visualizations](#11-experimental-visualizations)
 12. [Repository Structure](#12-repository-structure)
@@ -204,6 +206,10 @@ $$
 where $C_t$ represents the configured total observation cost.
 
 This allows the system to prioritize observations according to their potential impact on the controller's decision relative to their acquisition cost.
+
+### Configured Cost Versus Measured Runtime Cost
+
+The existing network experiment retains its configured normalized acquisition-cost baseline of **0.40**. The reference values used by the cost-normalization configuration are experiment parameters; they are not measurements of physical sensor energy, radio transmission delay, or real network latency. A separate local measurement campaign records software-side observation and payload costs. Its results are summarized in Section 9.4. A candidate normalized index of approximately **0.68** was derived for sensitivity analysis, but it was not adopted as the network configuration or used to replace the 0.40 baseline.
 
 ---
 
@@ -410,7 +416,62 @@ Run the inference smoke test and automated interface tests:
 ```powershell
 python src\ml\inference.py
 python tests\test_ml_inference.py
-```
+~~~
+
+### 9.4 Local Observation-Cost Measurement
+
+A separate local measurement campaign was conducted across low-, medium-, and high-demand scenarios with seeds 1, 2, and 3 (nine scenario-seed runs). Each run used a 60-second warm-up followed by a 60-second measurement window. The recorder captures local model-inference batch time, Python/TraCI observation-read time, JSON serialization time, and serialized payload size.
+
+The following pooled statistics use **planner-selected observations only** and exclude bootstrap measurements at simulation time less than or equal to 60 seconds:
+
+| Measurement | Pooled mean | Pooled P95 |
+|---|---:|---:|
+| Local TraCI observation-read time | 1.0109 ms | 1.9542 ms |
+| JSON serialization time | 0.0240 ms | 0.0453 ms |
+| Serialized payload size | 177.79 bytes | 179 bytes |
+
+These measurements characterize local simulation and software overhead. The SUMO/TraCI setup runs locally; payload size is a communication-volume proxy. The campaign does **not** measure actual network-transfer latency, physical sensor latency, radio energy, or bandwidth consumption. The pooled table above reports the selected-only observation metrics; model-inference timing is also recorded by the measurement utility.
+
+### 9.5 Learned-CVO Acquisition-Cost Threshold Sensitivity
+
+A threshold sweep compared 14 normalized acquisition-cost values on the same baseline SUMO trajectory:
+
+**0.05, 0.10, 0.15, 0.20, 0.22, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.68.**
+
+The evaluation covered three scenarios and three seeds (nine runs), producing 300 learned-CVO probability observations per run and 2,700 probability observations overall. The existing **0.40** cost policy was the only policy applied to SUMO. Every other threshold was evaluated counterfactually by a separate planner using the same per-timestep baseline beliefs. Therefore, the sweep measures one-step planner-selection sensitivity; it is **not** a set of independent closed-loop traffic-performance experiments.
+
+The table reports the mean number of CVO-driven planner selections per run and the sample standard deviation across the three seeds. Forced age-refresh selections are excluded from these counts:
+
+| Acquisition-cost threshold | Low demand | Medium demand | High demand |
+|---:|---:|---:|---:|
+| 0.10 | 76.67 ± 3.06 | 81.33 ± 2.08 | 60.67 ± 5.51 |
+| 0.15 | 53.67 ± 2.52 | 71.33 ± 1.53 | 46.67 ± 6.43 |
+| 0.20 | 27.00 ± 2.00 | 54.67 ± 4.93 | 34.67 ± 8.96 |
+| 0.22 | 10.67 ± 0.58 | 16.33 ± 0.58 | 15.00 ± 4.58 |
+| 0.30 | 6.00 ± 1.00 | 10.33 ± 1.15 | 9.67 ± 4.73 |
+| 0.40 (existing baseline) | 4.00 ± 1.00 | 6.00 ± 0.00 | 3.67 ± 1.53 |
+| 0.50 | 0.33 ± 0.58 | 1.33 ± 0.58 | 0.00 ± 0.00 |
+| 0.68 | 0.00 ± 0.00 | 0.00 ± 0.00 | 0.00 ± 0.00 |
+
+At a threshold of 0.68, none of the nine runs produced a CVO-driven selection; the planner's selections at that threshold were due to the separate forced age-refresh rule. Lower thresholds produced more CVO-driven selections. The result demonstrates sensitivity of acquisition decisions to the configured cost threshold, but does not establish that a lower threshold improves traffic outcomes.
+
+The mean predicted learned-CVO probabilities across the three seeds were approximately 0.1092 (low), 0.1235 (medium), and 0.1124 (high). The model's classification threshold (selected on validation data for binary evaluation) is conceptually different from the acquisition-cost threshold used by the planner, even when numerical values coincide.
+
+#### Reproduction commands
+
+~~~powershell
+# Compare the existing 0.40 cost with a candidate threshold on one baseline trajectory
+python scripts\measure_learned_cvo_cost_sensitivity.py low --seed 1 --candidate-cost 0.68
+
+# Run the multi-threshold sweep for a scenario and seed
+python scripts\sweep_learned_cvo_cost_thresholds.py high --seed 3
+
+# Run the focused helper tests
+python tests\test_learned_cvo_cost_sensitivity.py
+python tests\test_learned_cvo_cost_threshold_sweep.py
+~~~
+
+The scripts save summary and detailed CSV outputs under **results/processed/ml/cost_sensitivity/**. Both focused threshold-analysis test files passed **4/4 tests** when run. The original 45-run results, the 0.40 baseline configuration, and the saved learned-CVO model were retained unchanged during this analysis.
 
 ## 10. Exploratory Reinforcement Learning
 
@@ -506,6 +567,10 @@ BTP-CVO-Traffic-Control/
 │   ├── module_interfaces.md
 │   └── ML_EXTENSION.md
 │
+├── scripts/
+│   ├── measure_learned_cvo_cost_sensitivity.py
+│   └── sweep_learned_cvo_cost_thresholds.py
+│
 ├── results/
 │   ├── raw/
 │   ├── processed/
@@ -527,6 +592,8 @@ BTP-CVO-Traffic-Control/
 │
 ├── sumo/
 ├── tests/
+│   ├── test_learned_cvo_cost_sensitivity.py
+│   └── test_learned_cvo_cost_threshold_sweep.py
 ├── .gitignore
 └── README.md
 ```
@@ -640,6 +707,8 @@ python tests\test_ml_inference.py
 | Network observation-budget behaviour | Verified |
 | Dynamic network planner | Executed successfully |
 | ML inference interface tests | 6/6 passed |
+| Learned-CVO cost-sensitivity helper tests | 4/4 passed |
+| Learned-CVO threshold-sweep helper tests | 4/4 passed |
 | Temporal traffic robustness evaluation | 3 held-out seed folds completed |
 | Learned-CVO robustness evaluation | 3 held-out seed folds completed |
 | ML inference smoke test | Completed for both saved models |
@@ -678,6 +747,8 @@ The current implementation has several limitations:
 10. The three-fold ML robustness evaluation uses the three available simulation seeds and does not establish generalization to unseen cities, networks, or traffic distributions.
 11. The learned-CVO classifier has mean F1 around 0.48 and recall around 0.46 with isotonic calibration in the seed-rotated evaluation; it is not ready to serve as the sole observation-acquisition gate.
 12. The ML inference module is a tested offline interface and has not been integrated into the live SUMO control loop or benchmarked for edge-device latency.
+13. Local TraCI read time and JSON serialization time do not represent measured network-transfer latency, physical sensor latency, radio energy, or bandwidth use.
+14. The learned-CVO threshold sweep compares planner selections counterfactually on baseline trajectories; it does not establish closed-loop traffic-performance effects for alternative thresholds.
 
 ---
 
@@ -693,6 +764,7 @@ Potential future research directions include:
 - Improved reinforcement-learning policies.
 - Multi-agent reinforcement learning for coordinated intersections.
 - Broader evaluation across different networks, demand patterns and random seeds.
+- Independent closed-loop evaluation of candidate learned-CVO cost thresholds before any alternative threshold is adopted.
 - Pytest-compatible automated test coverage.
 - Pinned dependencies and a reproducible environment specification.
 
@@ -704,4 +776,4 @@ This project implements and evaluates a CVO-based adaptive observation-acquisiti
 
 Its central experimental finding is that CVO-based acquisition reduces observation frequency relative to Always-Acquire by approximately **14–21%** across the three evaluated traffic scenarios, while maintaining broadly comparable throughput in the reported experiments.
 
-Traffic prediction, learned CVO and single-agent DQN are included as additional exploratory research extensions, with their evaluation outcomes and limitations reported separately.
+Traffic prediction, learned CVO and single-agent DQN are included as additional exploratory research extensions, with their evaluation outcomes and limitations reported separately. A separate nine-run local cost-measurement campaign and nine-run counterfactual learned-CVO threshold sweep quantify software-side observation costs and acquisition-selection sensitivity; the existing 0.40 baseline remains unchanged, and no closed-loop traffic-performance claim is made for alternative thresholds.
